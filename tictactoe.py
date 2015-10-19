@@ -94,10 +94,8 @@ def generate_opponent_move(board, opponent):
         return random.choice(possible_moves)
 
 
-def play(board):
-    print
-    print('Welcome to Tic-tac-toe!')
-    print
+def play():
+    board = Board()
     response = raw_input('Would you like to play as X or O? ')
     while response not in ('x', 'X', 'o', 'O'):
         response = raw_input('Please enter either X or O. Try again: ')
@@ -145,14 +143,23 @@ def play(board):
         print('Oh noze! You lost!')
     else:
         print("It's a tie.")
+    print
+    response = raw_input('Would you like to play again? y/n: ')
+    while response not in ('y', 'Y', 'yes', 'Yes', 'n', 'N', 'no', 'No'):
+        response = raw_input('Please enter either "Y" or "N": ')
+    return True if response in ('y', 'Y', 'yes', 'Yes') else False
 
 
 def main():
-    board = Board()
+    print
+    print('Welcome to Tic-tac-toe!')
+    print
     try:
-        play(board)
+        while play():
+            pass
     except KeyboardInterrupt:
-        print('\n\nBye!')
+        pass
+    print('\nBye!')
 
 
 if __name__ == '__main__':
