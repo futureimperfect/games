@@ -32,6 +32,13 @@ class Board(object):
     def update_board(self, positions):
         self.board = BOARD_STR % positions
 
+    def possible_moves(self):
+        possible_moves = []
+        for k, v in self.positions.items():
+            if v == ' ':
+                possible_moves.append(k)
+        return possible_moves
+
     def update_positions(self, player, position):
         self.positions[str(position)] = player
         self.update_board(self.positions)
@@ -51,7 +58,7 @@ class Board(object):
 def generate_opponent_move(board, opponent):
     # TODO: Make opponent never lose.
     enemy = 'X' if opponent == 'O' else 'O'
-    possible_moves = get_possible_moves(board)
+    possible_moves = board.possible_moves()
     if len(possible_moves) > 0:
         possibly_good_moves = []
         for w in board.winning_positions:
@@ -87,14 +94,6 @@ def generate_opponent_move(board, opponent):
         return random.choice(possible_moves)
 
 
-def get_possible_moves(board):
-    possible_moves = []
-    for k, v in board.positions.items():
-        if v == ' ':
-            possible_moves.append(k)
-    return possible_moves
-
-
 def play(board):
     print
     print('Welcome to Tic-tac-toe!')
@@ -111,7 +110,7 @@ def play(board):
     winner = False
     loser = False
     while not game_over and not winner and not loser:
-        possible_moves = get_possible_moves(board)
+        possible_moves = board.possible_moves()
         if len(possible_moves) == 0:
             game_over = True
             break
@@ -121,13 +120,13 @@ def play(board):
             response = raw_input(
                 'You must enter a digit between 1 and 9! '
                 'Enter the appropriate number to make your move: ')
-        while response not in get_possible_moves(board):
+        while response not in board.possible_moves():
             response = raw_input('%s is already taken! Try again: ' % response)
         winner = board.update_positions(player, response)
         print
         print(board)
         print
-        if winner or len(get_possible_moves(board)) == 0:
+        if winner or len(board.possible_moves()) == 0:
             break
         print('OK, my turn...\n')
         time.sleep(1)
@@ -138,7 +137,7 @@ def play(board):
                 opponent))
         print(board)
         print
-        if loser or len(get_possible_moves(board)) == 0:
+        if loser or len(board.possible_moves()) == 0:
             break
     if winner:
         print("You're a winner!")
