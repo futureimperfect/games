@@ -36,7 +36,7 @@ class Board(object):
         possible_moves = []
         for k, v in self.positions.items():
             if v == ' ':
-                possible_moves.append(k)
+                possible_moves.append(int(k))
         return possible_moves
 
     def update_positions(self, player, position):
@@ -59,7 +59,13 @@ def generate_opponent_move(board, opponent):
     # TODO: Make opponent never lose.
     enemy = 'X' if opponent == 'O' else 'O'
     possible_moves = board.possible_moves()
+    first_move = True if len(possible_moves) >= 8 else False
     if len(possible_moves) > 0:
+        if first_move:
+            if 5 not in possible_moves:
+                return random.choice([1, 3, 7, 9])
+            elif 5 in possible_moves:
+                return 5
         possibly_good_moves = []
         for w in board.winning_positions:
             score = 0
@@ -73,9 +79,9 @@ def generate_opponent_move(board, opponent):
                 if score >= 2:
                     for j in w:
                         if board.positions[
-                                str(j)] == ' ' and str(j) in possible_moves:
+                                str(j)] == ' ' and j in possible_moves:
                             return j
-                elif score >= 1 and str(d) in possible_moves:
+                elif score >= 1 and d in possible_moves:
                     possibly_good_moves.append(d)
         for w in board.winning_positions:
             enemy_danger = []
@@ -85,12 +91,10 @@ def generate_opponent_move(board, opponent):
             if len(enemy_danger) >= 2:
                 for x in enemy_danger[0][1]:
                     if board.positions[
-                            str(x)] == ' ' and str(x) in possible_moves:
+                            str(x)] == ' ' and x in possible_moves:
                         return x
         if possibly_good_moves:
             return random.choice(possibly_good_moves)
-        if str(5) in possible_moves:
-            return 5
         return random.choice(possible_moves)
 
 
@@ -118,8 +122,9 @@ def play():
             response = raw_input(
                 'You must enter a digit between 1 and 9! '
                 'Enter the appropriate number to make your move: ')
-        while response not in board.possible_moves():
+        while int(response) not in board.possible_moves():
             response = raw_input('%s is already taken! Try again: ' % response)
+        response = int(response)
         winner = board.update_positions(player, response)
         print
         print(board)
