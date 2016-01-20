@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import urllib3
+import urllib2
 
 from random import randint
 
@@ -14,11 +14,10 @@ class Words(object):
         self.words = self.httpGet(self.url).splitlines()
 
     def httpGet(self, url):
-        return urllib3.PoolManager(
-        ).request(
-            'GET',
-            url
-        ).read()
+        r = urllib2.urlopen(self.url)
+        if r.code == urllib2.httplib.OK:
+            return r.read()
+        raise
 
     def getRandomWord(self):
         return self.words[randint(0, len(self.words) - 1)]
